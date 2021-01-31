@@ -12,21 +12,47 @@ const Storage = {
         return JSON.parse(localStorage.getItem("dev.finances: transactions")) || [];
     },
     set(transactions){
-        localStorage.setItem("dev.finances: transactions", JSON.stringify(transactions))
+        localStorage.setItem("dev.finances: transactions", JSON.stringify(transactions));
     }
 }
 
 const Transaction = {
     all: Storage.get(),
-
+    
     add(transaction){
         Transaction.all.push(transaction);
-
         App.reload();
     },
 
     remove(index){
         Transaction.all.splice(index, 1);
+        App.reload();
+    },
+        
+    edit(index){ //Atualizar dado do localStorage
+
+        Modal.open();
+
+        let description = Transaction.all[index].description;
+
+        let date = String(Transaction.all[index].date).split("/");
+        date = date[2] + "-" + date[1] + "-" + date[0];
+
+        let tamAmount = String(Transaction.all[index].amount).length - 2;
+
+        let amount = [
+            String(Transaction.all[index].amount).slice(0, tamAmount), 
+            String(Transaction.all[index].amount).slice(tamAmount, String(Transaction.all[index].amount).length)
+        ];
+
+        let amountFinal = Number(amount[0]+ "." + amount[1]);
+                 
+        document.getElementById("description").value = description;
+        document.getElementById("amount").value = amountFinal; 
+        document.getElementById("date").value = date; // precisa receber ano/mes/dia
+
+        Transaction.remove(index);
+
         App.reload();
     },
 
@@ -78,8 +104,9 @@ const DOM = {
         <td class="description">${transaction.description}</td>
         <td class="${CSSclass}">${amount}</td>
         <td class="date">${transaction.date}</td>
-        <td>
+        <td style="text-align: center;">
             <img onclick="Transaction.remove(${index})" src="./assets/minus.svg" alt="Remover transação">
+            <img onclick="Transaction.edit(${index})" src="./assets/plus.svg" alt="Editar transação">
         </td>
         `;
         
