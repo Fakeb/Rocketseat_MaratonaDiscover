@@ -2,4 +2,4 @@
 
 - Curso de front-end
 ## Minhas alterações
-- Botão de editar
+- Botão de alterar
